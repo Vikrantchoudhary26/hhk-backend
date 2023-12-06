@@ -1,16 +1,12 @@
-const express = require("express");
-const bodyParse = require("body-parser");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
 const path = require('path');
-const dotenv = require("dotenv");
-const dbConnect = require("./config/db/dbConnect");
+const dotenv = require('dotenv');
+const dbConnect = require('./config/db/dbConnect');
 const passport = require('passport');
-const cookieSession = require("cookie-session");
-const passportStrategy = require('./passport');const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
-
-
-
+const cookieSession = require('cookie-session');
+const passportStrategy = require('./passport');
+const multer = require('multer');
 
 //ROUTES
 const authRoutes = require('./route/User/authRoute');
@@ -36,57 +32,67 @@ const homecategoryRoutes = require('./route/HomeCategory/HomeCategory');
 //dotenv
 dotenv.config();
 const app = express();
+const whitelist = ['https://admin.hhkgifts.com', 'https://hhkgifts.com', 'http://localhost:3002', 'http://localhost:3001', 'http://localhost:3000'];
 
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+// cors
+app.use(cors(corsOptions));
 // dbConnect
 dbConnect();
 
-app.use(express.json());
+// Middleware
+app.use(express.json({ limit: '50mb', type: 'application/json' }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from 'public' folder
 
-//Users cookies
+// Users cookies
 app.use(
-    cookieSession({
-        name:"session",
-        keys:["hasthkala"],
-        maxAge: 24*60*60*100,
-    })
-)
+  cookieSession({
+    name: 'session',
+    keys: ['hasthkala'],
+    maxAge: 24 * 60 * 60 * 100,
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(upload.single('imageFile'));
-//cors
-app.use(
-	cors({
-		// origin: ['https://admin.hhkgifts.com','https://hhkgifts.com'],
-        origin: ['http://localhost:3002', 'http://localhost:3001', 'http://localhost:3000'],
-		methods: "GET,POST,PUT,DELETE",
-		credentials: true,
-	})
-);
+// Multer upload to a dedicated folder
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, 'uploads'),
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  },
+});
 
-app.use(bodyParse());
-app.use(bodyParse.json({limit: '50mb', type: 'application/json'}));
+const upload = multer({ storage: storage });
+// app.use(upload.single('imageFile'));
 
-
-app.use("/api", userRoutes);
-app.use("/api", otpRoutes);
-app.use("/api", categoryRoutes);
-app.use("/api", productRoutes);
-app.use("/api", initialDataRoutes);
-app.use("/api", cartRoutes);
-app.use("/api", orderRoutes);
-app.use("/api", paymentRoutes);
-app.use("/api", adminRoutes);
-app.use("/api", attributeRoutes);
-app.use("/api",couponRoutes);
-app.use("/api",giftBoxRoutes);
-app.use("/api",giftCardRoutes);
-app.use("/api",homecategoryRoutes);
-app.use("/api",notificationRoutes);
-app.use("/auth",authRoutes);
-
-// app.use('/shiprocket', shiprocketRoutes);
-
+// Routes
+app.use('/api', userRoutes);
+app.use('/api', otpRoutes);
+app.use('/api', categoryRoutes);
+app.use('/api', productRoutes);
+app.use('/api', initialDataRoutes);
+app.use('/api', cartRoutes);
+app.use('/api', orderRoutes);
+app.use('/api', paymentRoutes);
+app.use('/api', adminRoutes);
+app.use('/api', attributeRoutes);
+app.use('/api', couponRoutes);
+app.use('/api', giftBoxRoutes);
+app.use('/api', giftCardRoutes);
+app.use('/api', homecategoryRoutes);
+app.use('/api', notificationRoutes);
+app.use('/auth', authRoutes);
 
 module.exports = app;
