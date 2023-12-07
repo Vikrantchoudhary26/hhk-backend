@@ -32,8 +32,8 @@ const homecategoryRoutes = require('./route/HomeCategory/HomeCategory');
 //dotenv
 dotenv.config();
 const app = express();
-const whitelist = ['https://admin.hhkgifts.com', 'https://hhkgifts.com', 'http://localhost:3002', 'http://localhost:3001', 'http://localhost:3000'];
-
+const whitelist = ['https://admin.hhkgifts.com','https://backend.hhkgifts.com', 'https://hhkgifts.com', 'http://localhost:3002', 'http://localhost:3001', 'http://localhost:3000'];
+https://backend.hhkgifts.com/
 const corsOptions = {
   origin: (origin, callback) => {
     if (whitelist.includes(origin)) {
