@@ -45,7 +45,8 @@ const corsOptions = {
 };
 
 // cors
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
 // dbConnect
 dbConnect();
 
