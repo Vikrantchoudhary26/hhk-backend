@@ -5,8 +5,14 @@ const dotenv = require('dotenv');
 
 const app = express();
 // cors
-app.use(cors());
+const corsOptions = {
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+};
 
+app.use(cors(corsOptions));
 
 const dbConnect = require('./config/db/dbConnect');
 const passport = require('passport');
@@ -35,24 +41,24 @@ const homecategoryRoutes = require('./route/HomeCategory/HomeCategory');
 //dotenv
 dotenv.config();
 
-const whitelist = [
-    'https://admin.hhkgifts.com',
-    'https://backend.hhkgifts.com',
-    'https://hhkgifts.com',
-    'http://localhost:3002',
-    'http://localhost:3001',
-    'http://localhost:3000',
-];
+// const whitelist = [
+//     'https://admin.hhkgifts.com',
+//     'https://backend.hhkgifts.com',
+//     'https://hhkgifts.com',
+//     'http://localhost:3002',
+//     'http://localhost:3001',
+//     'http://localhost:3000',
+// ];
 
-const corsOptions = {
-    origin: (origin, callback) => {
-        if (whitelist.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-};
+// const corsOptions = {
+//     origin: (origin, callback) => {
+//         if (whitelist.includes(origin)) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error('Not allowed by CORS'));
+//         }
+//     },
+// };
 
 
 // dbConnect
