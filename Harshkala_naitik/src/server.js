@@ -3,6 +3,12 @@ const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
 const http = require('http');
+
+const app = express();
+// cors
+app.use(cors());
+
+
 const dbConnect = require('./config/db/dbConnect');
 const passport = require('passport');
 const cookieSession = require('cookie-session');
@@ -29,7 +35,7 @@ const homecategoryRoutes = require('./route/HomeCategory/HomeCategory');
 
 //dotenv
 dotenv.config();
-const app = express();
+
 const whitelist = [
     'https://admin.hhkgifts.com',
     'https://backend.hhkgifts.com',
@@ -49,8 +55,7 @@ const corsOptions = {
     },
 };
 
-// cors
-app.use(cors());
+
 // dbConnect
 dbConnect();
 
