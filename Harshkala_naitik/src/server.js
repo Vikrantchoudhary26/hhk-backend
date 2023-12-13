@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
-const http = require('http');
 
 const app = express();
 // cors
@@ -105,10 +104,9 @@ app.use('/api', homecategoryRoutes);
 app.use('/api', notificationRoutes);
 app.use('/auth', authRoutes);
 
-// Create HTTP server
+// Create server
 const PORT = process.env.PORT || 5500;
-const server = http.createServer(app);
 
-server.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
