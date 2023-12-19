@@ -3,7 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
 
-const app = express();
+const app = express(); 
 
 
 app.use(cors());
