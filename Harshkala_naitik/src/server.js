@@ -4,15 +4,9 @@ const path = require('path');
 const dotenv = require('dotenv');
 
 const app = express();
-// cors
-const corsOptions = {
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    optionsSuccessStatus: 204,
-};
 
-app.use(cors(corsOptions));
+
+app.use(cors());
 
 const dbConnect = require('./config/db/dbConnect');
 const passport = require('passport');
