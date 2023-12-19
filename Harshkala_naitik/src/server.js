@@ -58,6 +58,24 @@ dotenv.config();
 // dbConnect
 dbConnect();
 
+//log request details including payload size
+app.use(
+    expressWinston.logger({
+      transports: [new winston.transports.Console()],
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      ),
+      meta: false, // don't log metadata
+      msg: 'HTTP {{req.method}} {{req.url}}',
+      expressFormat: true,
+      colorize: false,
+      ignoreRoute: function (req, res) {
+        return false;
+      },
+    })
+  );
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
