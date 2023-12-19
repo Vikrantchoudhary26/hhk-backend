@@ -59,7 +59,7 @@ dotenv.config();
 dbConnect();
 
 // Middleware
-app.use(express.json({ limit: '50mb', type: 'application/json' }));
+app.use(express.json({ limit: '100mb', type: 'application/json' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from 'public' folder
 
