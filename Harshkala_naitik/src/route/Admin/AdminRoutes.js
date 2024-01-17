@@ -1,5 +1,5 @@
 const express = require("express");
-const { adminCreateProductCtrl, adminCreateCategoryCtrl,adminAllCategoryParentCtrl, adminUpdateProductCtrl, adminRecentOrderCtrl, adminAllCustomersCtrl, adminAllOrdersCtrl, adminAllProductsCtrl, adminAllCategoryCtrl, adminDeleteRecentOrderCtrl, adminDashboardCtrl, adminDeleteCustomerCtrl, adminDeleteProductCtrl, adminDeleteCategoryCtrl, adminUpdateCategoryCtrl, adminCreateHomeCategoryCtrl, adminDeleteHomeCategoryCtrl, adminGetHomeCategoryCtrl, contactUsMailCtrl, changeStatusCtrl, updateAdminCtrl, updateAdminAvatarCtrl, getAdminNotifications, AdminDeleteNotificationCtrl } = require("../../controller/Admin/AdminController");
+const { adminCreateProductCtrl, adminCreateCategoryCtrl, adminAllCategoryParentCtrl, adminUpdateProductCtrl, adminRecentOrderCtrl, adminAllCustomersCtrl, adminAllOrdersCtrl, adminAllProductsCtrl, adminAllCategoryCtrl, adminDeleteRecentOrderCtrl, adminDashboardCtrl, adminDeleteCustomerCtrl, adminDeleteProductCtrl, adminDeleteCategoryCtrl, adminUpdateCategoryCtrl, adminCreateHomeCategoryCtrl, adminDeleteHomeCategoryCtrl, adminGetHomeCategoryCtrl, contactUsMailCtrl, changeStatusCtrl, updateAdminCtrl, updateAdminAvatarCtrl, getAdminNotifications, AdminDeleteNotificationCtrl } = require("../../controller/Admin/AdminController");
 const router = express.Router();
 const { adminMobileNoVerificatiion, adminEmailVerification } = require("../../controller/User/UserController");
 const multer = require('multer');
@@ -131,8 +131,9 @@ router.post('/admin-update-product', upload.array('images'), (req, res) => {
 
 
 router.post('/admin-create-category', upload.array('images'), (req, res) => {
+    console.log("---------1")
     const files = req?.files;
-
+    console.log("---------2", files)
     // Create an array to store the promises for each image upload
     const uploadPromises = files.map(file => {
         const params = {
@@ -144,11 +145,14 @@ router.post('/admin-create-category', upload.array('images'), (req, res) => {
 
         return s3.upload(params).promise();
     });
-
+    console.log("---------3", uploadPromises)
+    
     // Execute all upload promises
     Promise.all(uploadPromises)
-        .then(uploadedImages => {
+    .then(uploadedImages => {
+            console.log("---------4")
             const imageUrls = uploadedImages.map(uploadedImage => uploadedImage.Location);
+            console.log("---------5",imageUrls)
             adminCreateCategoryCtrl(req, res, imageUrls);
         })
         .catch(error => {
@@ -201,30 +205,30 @@ router.post('/admin-update-category', upload.array('images'), (req, res) => {
 
 // router.post('/admin-create-category')
 // router.post('/admin-update-category')
-router.get('/admin-dashboard',adminDashboardCtrl)
+router.get('/admin-dashboard', adminDashboardCtrl)
 
-router.post('/delete-recent-order',adminDeleteRecentOrderCtrl);
-router.post('/delete-customer',adminDeleteCustomerCtrl);
-router.post('/delete-product',adminDeleteProductCtrl);
-router.post('/delete-category',adminDeleteCategoryCtrl);
-router.post('/admin-all-category',adminAllCategoryCtrl);
-router.get('/admin-all-category-parent',adminAllCategoryParentCtrl)
-router.get('/admin-all-products/:skip/:name/:cid',adminAllProductsCtrl)
-router.get('/admin-all-orders/:skip/:name/:status',adminAllOrdersCtrl)
-router.post('/admin-all-customers',adminAllCustomersCtrl)
-router.get('/admin-recent-orders',adminRecentOrderCtrl)
+router.post('/delete-recent-order', adminDeleteRecentOrderCtrl);
+router.post('/delete-customer', adminDeleteCustomerCtrl);
+router.post('/delete-product', adminDeleteProductCtrl);
+router.post('/delete-category', adminDeleteCategoryCtrl);
+router.post('/admin-all-category', adminAllCategoryCtrl);
+router.get('/admin-all-category-parent', adminAllCategoryParentCtrl)
+router.get('/admin-all-products/:skip/:name/:cid', adminAllProductsCtrl)
+router.get('/admin-all-orders/:skip/:name/:status', adminAllOrdersCtrl)
+router.post('/admin-all-customers', adminAllCustomersCtrl)
+router.get('/admin-recent-orders', adminRecentOrderCtrl)
 
-router.post('/admin-mobileverification',adminMobileNoVerificatiion);
-router.post('/admin-emailverification',adminEmailVerification);
+router.post('/admin-mobileverification', adminMobileNoVerificatiion);
+router.post('/admin-emailverification', adminEmailVerification);
 
-router.post('/admin-create-home-categories',adminCreateHomeCategoryCtrl);
-router.post('/admin-delete-home-categories',adminDeleteHomeCategoryCtrl);
-router.get('/admin-get-home-categories',adminGetHomeCategoryCtrl);
+router.post('/admin-create-home-categories', adminCreateHomeCategoryCtrl);
+router.post('/admin-delete-home-categories', adminDeleteHomeCategoryCtrl);
+router.get('/admin-get-home-categories', adminGetHomeCategoryCtrl);
 
-router.post('/contact-us-mail',contactUsMailCtrl);
-router.post('/change-status',changeStatusCtrl);
+router.post('/contact-us-mail', contactUsMailCtrl);
+router.post('/change-status', changeStatusCtrl);
 
-router.post('/update-admin',updateAdminCtrl);
+router.post('/update-admin', updateAdminCtrl);
 
 
 
@@ -260,8 +264,8 @@ router.post('/update-admin-avatar', upload.array('images'), (req, res) => {
     }
 });
 
-router.get('/admin-notifications',getAdminNotifications);
-router.post('/admin-delete-notifications',AdminDeleteNotificationCtrl);
+router.get('/admin-notifications', getAdminNotifications);
+router.post('/admin-delete-notifications', AdminDeleteNotificationCtrl);
 
 
 module.exports = router;

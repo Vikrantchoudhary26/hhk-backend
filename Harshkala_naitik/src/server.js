@@ -1,18 +1,17 @@
+// Importing required modules
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
-
-const app = express(); 
-
-
-app.use(cors());
-
-const dbConnect = require('./config/db/dbConnect');
 const passport = require('passport');
 const cookieSession = require('cookie-session');
-const passportStrategy = require('./passport');
 const multer = require('multer');
+const dbConnect = require('./config/db/dbConnect');
+const passportStrategy = require('./passport');
+
+// Initializing express app
+const app = express();
+
 
 //ROUTES
 const authRoutes = require('./route/User/authRoute');
@@ -32,39 +31,18 @@ const giftCardRoutes = require('./route/GiftCards/GiftCardRoute');
 const notificationRoutes = require('./route/Notifications/Notifications');
 const homecategoryRoutes = require('./route/HomeCategory/HomeCategory');
 
-//dotenv
+// Connecting to the database
+dbConnect();
+// Configuring environment variables
 dotenv.config();
 
-// const whitelist = [
-//     'https://admin.hhkgifts.com',
-//     'https://backend.hhkgifts.com',
-//     'https://hhkgifts.com',
-//     'http://localhost:3002',
-//     'http://localhost:3001',
-//     'http://localhost:3000',
-// ];
-
-// const corsOptions = {
-//     origin: (origin, callback) => {
-//         if (whitelist.includes(origin)) {
-//             callback(null, true);
-//         } else {
-//             callback(new Error('Not allowed by CORS'));
-//         }
-//     },
-// };
-
-
-// dbConnect
-dbConnect();
-
-
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middleware setup
+app.use(cors()); // Enable CORS
+app.use(express.json()); // Parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from 'public' folder
 
-// Users cookies
+// Configuring user cookies
 app.use(
     cookieSession({
         name: 'session',
@@ -76,7 +54,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Multer upload to a dedicated folder
+// Configuring Multer for file uploads
 const storage = multer.diskStorage({
     destination: path.join(__dirname, 'uploads'),
     filename: (req, file, cb) => {
@@ -85,9 +63,14 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-// app.use(upload.single('imageFile'));
 
-// Routes
+// Routes setup
+// app.use('/', (req, res) => {
+//     // Default route to check server status
+//     res.status(200).json({ message: 'Hasthkala server is working fine👌.' });
+// });
+
+// API routes
 app.use('/api', userRoutes);
 app.use('/api', otpRoutes);
 app.use('/api', categoryRoutes);

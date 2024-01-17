@@ -7,7 +7,7 @@ const Category = require("../../models/Category/CategoryModel");
 const sendEmail = require('../../utils/SendMail');
 const Notifications = require("../../models/Notifications/Notifications");
 
-const uuid = require('uuid'); 
+const uuid = require('uuid');
 
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -418,6 +418,7 @@ exports.adminAllProductsCtrl = async (req, res) => {
 }
 
 exports.adminAllCategoryCtrl = async (req, res) => {
+    console.log("=====1")
     try {
         const { skip, name } = req.body;
         if (name != "null") {
@@ -554,22 +555,37 @@ exports.adminDeleteHomeCategoryCtrl = async (req, res) => {
 }
 
 exports.adminCreateCategoryCtrl = async (req, res, imageUrls) => {
-
+    console.log("========6")
     let productImages = [];
     if (imageUrls) {
+        console.log("========7")
         if (imageUrls.length > 0) {
+            console.log("========8")
             productImages = imageUrls.map(imageUrl => {
+                console.log("========9")
                 return { img: imageUrl }
             });
         }
     } else {
+        console.log("========10")
         productImages = null
     }
 
+    console.log("========11")
     try {
+        console.log("========12")
         const { name } = req.body;
+        console.log("========13")
         const existingCategory = await CategoryModel.findOne({ name });
+        console.log("========14")
         if (productImages) {
+
+            console.log("========15",{
+                name,
+                slug: slugify(name),
+                images: productImages,
+                parentid: req?.body?.parentid,
+            })
 
             CategoryModel.create({
                 name,
@@ -577,6 +593,7 @@ exports.adminCreateCategoryCtrl = async (req, res, imageUrls) => {
                 images: productImages,
                 parentid: req?.body?.parentid,
             }).then((category) => {
+                console.log("========16", category)
                 return res.status(200).json({
                     category
                 })
@@ -645,9 +662,9 @@ exports.contactUsMailCtrl = async (req, res) => {
             Notifications.create({
                 message: msg,
                 type: 'Contact',
-                name:req?.body?.name,
-                email:req?.body?.email,
-                phone:req?.body?.phone,
+                name: req?.body?.name,
+                email: req?.body?.email,
+                phone: req?.body?.phone,
             }).then(async (notificationCreated) => {
                 await sendEmail('brickgold62@gmail.com', `${name}: Contacted You!`, msg).then((emailSent) => {
                     return res.status(200).json({
@@ -745,7 +762,7 @@ exports.getAdminNotifications = async (req, res) => {
         const notifications = await Notifications.find({});
         return res.status(200).json({
             notifications,
-            totalnotifications:notifications.length,
+            totalnotifications: notifications.length,
         })
     }
     catch (error) {
